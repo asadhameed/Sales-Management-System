@@ -10,7 +10,6 @@ router.post('/', [requiredEmailExists, requiredValidPasswordForUser],async (req,
     if (errors.length > 0) return res.status(400).send('Error' + errors[0].msg);
     const user = await User.findOne({ email: req.body.email });
     const token = user.generateAuthToken()
-   // throw new Error("sfdfjfd")
    res.header('x-auth-token', token).send(_.pick(user, ['name', 'email']))
 });
 module.exports = router;
