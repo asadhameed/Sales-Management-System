@@ -4,11 +4,9 @@ require('winston-mongodb')
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+require('./app-startup/app-routers')(app)
 require('dotenv').config();
-const authRouter = require('./routers/admin/auth');
-const userRegistrationRouter = require('./routers/admin/user-registration')
-const customerRouter = require('./routers/customer/customer')
-const error = require('./middleware/error');
+
 
 
 /*************************
@@ -64,11 +62,5 @@ if (!process.env.JWT_PRIVATE_KEY) {
  */
 
 
-app.use(express.json());
-app.use('/signin', authRouter)
-app.use('/signup', userRegistrationRouter)
-app.use('/customer', customerRouter)
-
-app.use(error)
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Listening on port ${port}`))
