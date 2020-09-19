@@ -9,10 +9,14 @@ const authRouter = require('./routers/admin/auth');
 const userRegistrationRouter = require('./routers/admin/user-registration')
 const customerRouter = require('./routers/customer/customer')
 const error = require('./middleware/error');
-const { info } = require('winston');
 
 process.on('uncaughtException', (ex) => {
     console.log(" Exception Got to start the application")
+    winston.error(ex.message, ex)
+    process.exit(1);
+})
+process.on('unhandledRejection', (ex) => {
+    console.log(" Exception Got an unhandled Rejection")
     winston.error(ex.message, ex)
     process.exit(1);
 })
@@ -20,7 +24,7 @@ process.on('uncaughtException', (ex) => {
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 winston.add(new winston.transports.MongoDB({
     db: 'mongodb://localhost/sale-management',
-    level:'info',
+    level: 'info',
     options: { useNewUrlParser: true, useUnifiedTopology: true }
 }))
 mongoose.connect('mongodb://localhost/sale-management', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
@@ -32,11 +36,23 @@ if (!process.env.JWT_PRIVATE_KEY) {
 }
 /****************************************************
  * If error happened before the application start then winston can not log that error.
- * catch the exception in start of application and save in winston log
+ * caught the exception in start of application and save in winston log
  * process.on('uncaughtException' , (ex)=>{
  * }) 
  */
 //throw new Error("exception happened before application start")
+/***************************
+ * Uncaught the promise rejection
+ * If promise is reject, caught the unhandled rejection
+ * process.on('unhandledRejection', (ex)=>{
+ * })
+ *  const p = Promise.reject(new Error("promise is rejected"))
+ * p.then(()=>console.log("done"))
+ * 
+ */
+
+// const p = Promise.reject(new Error("Promise is rejected"))
+// p.then(()=>console.log("done"))
 app.use(express.json());
 app.use('/signin', authRouter)
 app.use('/signup', userRegistrationRouter)
