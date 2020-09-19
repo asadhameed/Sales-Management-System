@@ -20,6 +20,14 @@ process.on('unhandledRejection', (ex) => {
     winston.error(ex.message, ex)
     process.exit(1);
 })
+/*************************
+ *  This is handle only caught only uncaughtException. If there is unhandledRejection then winston exception is
+ * not handle it
+ winston.exceptions.handle(
+    new winston.transports.File({ filename: 'exceptions.log' })
+  );
+ */
+
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 winston.add(new winston.transports.MongoDB({
@@ -51,8 +59,8 @@ if (!process.env.JWT_PRIVATE_KEY) {
  * 
  */
 
-// const p = Promise.reject(new Error("Promise is rejected"))
-// p.then(()=>console.log("done"))
+const p = Promise.reject(new Error("Promise is rejected"))
+p.then(()=>console.log("done"))
 app.use(express.json());
 app.use('/signin', authRouter)
 app.use('/signup', userRegistrationRouter)
