@@ -10,16 +10,7 @@ const userRegistrationRouter = require('./routers/admin/user-registration')
 const customerRouter = require('./routers/customer/customer')
 const error = require('./middleware/error');
 
-process.on('uncaughtException', (ex) => {
-    console.log(" Exception Got to start the application")
-    winston.error(ex.message, ex)
-    process.exit(1);
-})
-process.on('unhandledRejection', (ex) => {
-    console.log(" Exception Got an unhandled Rejection")
-    winston.error(ex.message, ex)
-    process.exit(1);
-})
+
 /*************************
  *  This is handle only caught only uncaughtException. If there is unhandledRejection then winston exception is
  * not handle it
@@ -27,7 +18,20 @@ process.on('unhandledRejection', (ex) => {
     new winston.transports.File({ filename: 'exceptions.log' })
   );
  */
+winston.exceptions.handle(
+    new winston.transports.File({ filename: 'exceptions.log' }));
 
+// process.on('uncaughtException', (ex) => {
+//     console.log(" Exception Got to start the application")
+//     winston.error(ex.message, ex)
+//     process.exit(1);
+// })
+process.on('unhandledRejection', (ex) => {
+    // console.log(" Exception Got an unhandled Rejection")
+    // winston.error(ex.message, ex)
+    // process.exit(1);
+    throw ex;
+})
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 winston.add(new winston.transports.MongoDB({
@@ -59,8 +63,7 @@ if (!process.env.JWT_PRIVATE_KEY) {
  * 
  */
 
-const p = Promise.reject(new Error("Promise is rejected"))
-p.then(()=>console.log("done"))
+
 app.use(express.json());
 app.use('/signin', authRouter)
 app.use('/signup', userRegistrationRouter)
