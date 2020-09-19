@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {userAuth , isAdmin}= require('../../middleware/auth')
 
-router.get('/', userAuth, (req, res)=>{
+router.get('/', (req, res)=>{
+    throw new Error('could not find the user');
     res.send(req.user)
 })
 
