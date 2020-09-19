@@ -1,5 +1,6 @@
 require('express-async-errors');
 const winston  = require('winston');
+require('winston-mongodb')
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -10,6 +11,7 @@ const customerRouter = require('./routers/customer/customer')
 const error = require('./middleware/error')
 
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(new winston.transports.MongoDB({db:'mongodb://localhost/sale-management',options:{ useNewUrlParser: true, useUnifiedTopology: true}}))
 mongoose.connect('mongodb://localhost/sale-management', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
     .then(() => console.log('Connect with mongo db with sale management'))
     .catch(err => console.log('Error occurs in sale management database', err))
