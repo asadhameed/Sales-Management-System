@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true, minlength: 5, maxlength: 50 },
     email: { type: String, required: true, minlength: 4, maxlength: 255, unique: true },
     password: { type: String, required: true, minlength: 6, maxlength: 1024 },
-    admin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false }
 });
 
 userSchema.methods.generateAuthToken = function () {
-    return jwt.sign({ _id: this._id, name: this.name, admin: this.admin }, process.env.JWT_PRIVATE_KEY);
+    return jwt.sign({ _id: this._id, name: this.name, isAdmin: this.isAdmin }, process.env.JWT_PRIVATE_KEY);
 }
 
 const User = mongoose.model('user', userSchema);

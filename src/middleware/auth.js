@@ -21,7 +21,7 @@ function userAuth(req, res, next) {
     }
 }
 function isAdmin(req, res, next) {
-    if (!req.user.admin)
+    if (!req.user.isAdmin)
         return res.status(403).send('Access denied')
     next()
 }
