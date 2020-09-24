@@ -1,6 +1,6 @@
 require('express-async-errors');
 const winston = require('winston');
-require('winston-mongodb')
+//require('winston-mongodb')
 module.exports = function () {
 
     /*************************
@@ -16,11 +16,11 @@ module.exports = function () {
     process.on('unhandledRejection', (ex) => {
         throw ex;})
     winston.add(new winston.transports.File({ filename: 'logfile.log' }));
-    winston.add(new winston.transports.MongoDB({
-        db: 'mongodb://localhost/sale-management',
-        level: 'info',
-        options: { useNewUrlParser: true, useUnifiedTopology: true }
-    }))
+    // winston.add(new winston.transports.MongoDB({
+    //     db: 'mongodb://localhost/sale-management',
+    //     level: 'info',
+    //     options: { useNewUrlParser: true, useUnifiedTopology: true }
+    // }))
     // process.on('uncaughtException', (ex) => {
     //     console.log(" Exception Got to start the application")
     //     winston.error(ex.message, ex)

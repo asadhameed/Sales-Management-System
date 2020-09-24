@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 //const Joi = require('joi');
 const jwt = require('jsonwebtoken')
-require('dotenv').config();
 const { check } = require('express-validator');
 const { comparePassword } = require('./password-util');
 const { boolean } = require('joi');
