@@ -40,49 +40,48 @@ describe('Customer API', () => {
         })
 
         describe("Post Method", () => {
-                it('should return 401 error if client is not login', async () => {
-                        const res = await request(server)
+                // Define Happy path, and in each test change the one parameter according to test
+                let token;
+                let name;
+                const exec = async () => {
+                        return await request(server)
                                 .post('/customer')
-                                .send({ name: "test Customer" });
-                        expect(res.status).toBe(401)
+                                .set('x-auth-token', token)
+                                .send({ name});
+                }
+
+                beforeEach(()=>{
+                        token = new User().generateAuthToken();
+                        name='Customer'
+                })
+
+                it('should return 401 error if client is not login', async () => {
+                        token='';
+                        const res = await exec();
+                        expect(res.status).toBe(401);
                 })
 
                 it('should return 400 error if customer name is less then 3', async () => {
-                        const token = new User().generateAuthToken();
-                        const res = await request(server)
-                                .post('/customer')
-                                .set('x-auth-token', token)
-                                .send({ name: "aa" });
-                        expect(res.status).toBe(400)
+                        name='aa';
+                        const res = await exec();
+                        expect(res.status).toBe(400);
                 })
                 it('should return 400 error if customer name is grater then 20', async () => {
-                        const customer = new Array(22).join('a') // if we want customer name length 21 then we should have array length of 22
-                        const token = new User().generateAuthToken();
-                        const res = await request(server)
-                                .post('/customer')
-                                .set('x-auth-token', token)
-                                .send({ name: customer });
-                        expect(res.status).toBe(400)
+                        name = new Array(22).join('a'); // if we want customer name length 21 then we should have array length of 22
+                        const res = await exec();
+                        expect(res.status).toBe(400);
                 })
 
                 it("should save customer if it is Valid", async () => {
-                        const token = new User().generateAuthToken();
-                        await request(server)
-                                .post('/customer')
-                                .set('x-auth-token', token)
-                                .send({ name: 'Customer1' });
-                        const customer = Customer.find({ name: 'Customer1' });
-                        expect(customer).not.toBeNull()
+                        await exec();
+                        const customer = Customer.find({ name: 'Customer' });
+                        expect(customer).not.toBeNull();
                 })
 
                 it('should send in response if customer is valid', async () => {
-                        const token = new User().generateAuthToken();
-                        const res = await request(server)
-                                .post('/customer')
-                                .set('x-auth-token', token)
-                                .send({ name: 'Customer' });
-                       expect(res.body).toHaveProperty('_id')
-                       expect(res.body).toHaveProperty('name', 'Customer')
+                        const res = await exec();
+                        expect(res.body).toHaveProperty('_id');
+                        expect(res.body).toHaveProperty('name', 'Customer');
                 })
 
 
