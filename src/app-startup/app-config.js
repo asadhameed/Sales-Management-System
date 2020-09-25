@@ -7,4 +7,6 @@ require("dotenv").config()
 module.exports = function () {
     if (!process.env.JWT_PRIVATE_KEY)
         throw new Error("FATAl Error: JwtPrivateKey is not define ")
+    if (!process.env.DB_URL)
+        throw new Error("FATAl Error: database uri  is not define ")
 }
