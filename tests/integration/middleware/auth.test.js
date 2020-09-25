@@ -6,7 +6,7 @@ let server;
 describe('Auth middleWare', () => {
     beforeEach(() => { server = require('../../../src/index') })
     afterEach( async() => {
-        server.close();
+        await server.close();
        await  Customer.deleteMany({})
     })
     let token;

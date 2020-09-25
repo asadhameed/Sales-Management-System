@@ -24,5 +24,12 @@ router.post('/', [userAuth, validation.requiredName], async (req, res) => {
     res.send(customer)
 })
 
+router.delete('/', [userAuth, isAdmin], async (req, res) => {
+    const id = req.body.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid ID')
+    const customer = await Customer.findByIdAndDelete(id);
+    if (!customer) return res.status(404).send('Not found')
+    res.status(200).send(customer)
+})
 
 module.exports = router;

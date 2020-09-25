@@ -8,7 +8,7 @@ describe('Customer API', () => {
                 server = require('../../src/index')
         })
         afterEach(async () => {
-                server.close();
+                await server.close();
                 await Customer.deleteMany({})
                 //await  mongoose.connection.dropCollection('customers')
                 //  await Customer.remove({})
@@ -47,22 +47,22 @@ describe('Customer API', () => {
                         return await request(server)
                                 .post('/customer')
                                 .set('x-auth-token', token)
-                                .send({ name});
+                                .send({ name });
                 }
 
-                beforeEach(()=>{
+                beforeEach(() => {
                         token = new User().generateAuthToken();
-                        name='Customer'
+                        name = 'Customer'
                 })
 
                 it('should return 401 error if client is not login', async () => {
-                        token='';
+                        token = '';
                         const res = await exec();
                         expect(res.status).toBe(401);
                 })
 
                 it('should return 400 error if customer name is less then 3', async () => {
-                        name='aa';
+                        name = 'aa';
                         const res = await exec();
                         expect(res.status).toBe(400);
                 })
@@ -84,9 +84,65 @@ describe('Customer API', () => {
                         expect(res.body).toHaveProperty('name', 'Customer');
                 })
 
-
         })
 
+        describe('Delete Customer', () => {
+                let token;
+                let id;
+                beforeEach(() => {
+                        token = new User({ isAdmin: false }).generateAuthToken();
+                        id = '1'
+                })
 
+                const exec = () => {
+                        return request(server)
+                                .del('/customer')
+                                .set('x-auth-token', token)
+                                .send({ id });
+                }
+
+                it('Should return  401 if user is not login', async () => {
+                        token = ''
+                        const res = await exec();
+                        expect(res.status).toBe(401);
+                })
+
+                it('Should return  401 if invalid token', async () => {
+                        token = 'aaa'
+                        const res = await exec();
+                        expect(res.status).toBe(400);
+                })
+
+                it('Should return  401 if valid token but not admin', async () => {
+
+                        const res = await exec();
+                        expect(res.status).toBe(403);
+                })
+
+                it('Should return 404 if login and admin but not valid customer id', async () => {
+                        token = new User({ isAdmin: true }).generateAuthToken();
+                        const res = await exec();
+                        expect(res.status).toBe(404);
+                })
+
+                it('Should return 404 if valid customer id  but not found ', async () => {
+                        token = new User({ isAdmin: true }).generateAuthToken();
+                        id = mongoose.Types.ObjectId();
+                        const res = await exec();
+                        expect(res.status).toBe(404);
+                })
+
+                it('Should return 200 if valid customer and delete', async () => {
+                        const customer = new Customer({ name: 'customer1' });
+                        await customer.save();
+                        token = new User({ isAdmin: true }).generateAuthToken();
+                        id = customer._id
+                        const res = await exec();
+                        expect(res.status).toBe(200);
+                        expect(res.body).toHaveProperty('_id')
+                        expect(res.body).toHaveProperty('name', 'customer1')
+                })
+
+        })
 
 })
