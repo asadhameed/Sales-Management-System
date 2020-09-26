@@ -1,4 +1,4 @@
-const { generatePassword, comparePassword}=require('../../../src/models/user/password-util')
+const { generatePassword, comparePassword}=require('../../../../src/models/user/password-util')
 describe('password-utils.generatePassword and password-utils.comparePassword',  ()=>{
     it('If the password will same then return true  ', async()=>{
          const password='abcd1234';
