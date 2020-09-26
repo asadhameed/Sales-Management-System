@@ -10,6 +10,9 @@
     "test": "jest --watchAll  --verbose --runInBand --detectOpenHandles --coverage",
     "start": "node src/index.js"
   },
+  "engines": {
+    "node":"12.18.3"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
