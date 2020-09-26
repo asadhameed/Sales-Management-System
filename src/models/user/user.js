@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
-//const Joi = require('joi');
 const jwt = require('jsonwebtoken')
 const { check } = require('express-validator');
 const { comparePassword } = require('./password-util');
-const { boolean } = require('joi');
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true, minlength: 5, maxlength: 50 },
     email: { type: String, required: true, minlength: 4, maxlength: 255, unique: true },

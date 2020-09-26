@@ -4,6 +4,7 @@ require('./app-startup/app-log')();
 require('./app-startup/app-config')();
 require('./app-startup/app-routers')(app);
 require('./app-startup/app-db-connection')();
+require('./app-startup/app-prod')(app);
 
 
 const port = process.env.PORT || 3000
